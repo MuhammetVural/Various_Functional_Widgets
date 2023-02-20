@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -11,9 +12,11 @@ class MyHomePage extends StatefulWidget {
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
+
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+   CountDownController _countDownController = CountDownController();
   double percent = 0;
   int _counter = 0;
   static int timeInMinut = 25;
@@ -32,36 +35,30 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  _startTimer(){
+  _startTimer() {
     timeInMinut = 25;
-    int time = timeInMinut *60;
-    double secPercent = (time/100);
-    timer = Timer.periodic(Duration(seconds: 1),  (timer) {
+    int time = timeInMinut * 60;
+    double secPercent = (time / 100);
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-        if(time > 0){
+        if (time > 0) {
           time--;
-          if(time % 60 == 0){
+          if (time % 60 == 0) {
             timeInMinut--;
           }
-          if(time % secPercent == 0){
-            if(percent < 1){
+          if (time % secPercent == 0) {
+            if (percent < 1) {
               percent += 0.01;
-            }else{
+            } else {
               percent = 1;
             }
-          }
-          else
-          {
-            percent =0;
+          } else {
+            percent = 0;
             timer.cancel();
-
           }
         }
-
-
       });
     });
-
   }
 
   @override
@@ -73,12 +70,6 @@ class _MyHomePageState extends State<MyHomePage> {
             Icons.menu,
           ),
           actions: [
-            IconButton(
-                onPressed: () {
-
-                },
-                icon:
-                    Badge(label: Text('5'), child: Icon(Icons.shopping_cart))),
             IconButton(
                 onPressed: () {},
                 icon: badges.Badge(
@@ -107,30 +98,22 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              const Text(
-                'Times',
-              ),
-              Expanded(
-                child: CircularPercentIndicator(
-                  percent: percent,
-                  animation: true,
-                  animateFromLastPercent: true,
-                  radius: 100,
-                  lineWidth: 20,
-                  progressColor: Colors.blue,
-                  center: Text(
-                    '$timeInMinut',
-                    style: TextStyle(fontSize: 60, color: Colors.blue),
-                  ),
-                  circularStrokeCap: CircularStrokeCap.round,
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
+
+               Expanded(
+                  child: CircularCountDownTimer(
+                    autoStart: false,
+                    controller: _countDownController,
+                    duration: 60,
+                    width: 150,
+                    height:150,
+                    textStyle: TextStyle(fontSize: 60),
+                    fillColor: Colors.blue,
+                    ringColor: Colors.grey,
+              )),
+
               Expanded(
                   child: Container(
-                width: double.infinity,
+
                 decoration: BoxDecoration(
                     color: Colors.blue.withOpacity(0.3),
                     borderRadius: BorderRadius.only(
@@ -143,34 +126,80 @@ class _MyHomePageState extends State<MyHomePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Expanded(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Column(children: [
-                              Text('Study Timer', style: TextStyle(fontSize: 25),),
-                              SizedBox(height: 10,),
-                              Text('10',style: TextStyle(fontSize: 50),),
-                            ],),
-                          ),
-                          Expanded(
-                            child: Column(children: [
-                              Text('Pause Time', style: TextStyle(fontSize: 25),),
-                              SizedBox(height: 10,),
-                              Text('10',style: TextStyle(fontSize: 50),),
-                            ],),
-                          ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SingleChildScrollView(
+                              padding: EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Study Timer',
+                                    style: TextStyle(fontSize: 25),
+                                  ),
 
-                        ],
+                                  Text(
+                                    '10',
+                                    style: TextStyle(fontSize: 50),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SingleChildScrollView(
+                              padding: EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Pause Time',
+                                    style: TextStyle(fontSize: 25),
+                                  ),
+
+                                  Text(
+                                    '10',
+                                    style: TextStyle(fontSize: 50),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                      Container(
+                        margin: EdgeInsets.all(30),
 
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(shape: CircleBorder(), padding: EdgeInsets.all(8) ),
+
+                              onPressed: () {
+                                _countDownController.pause();
+                              },
+                              child: Icon(Icons.pause_rounded,size: 30,),
+                            ),
+                            SizedBox(width: 10,),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(shape: CircleBorder(), ),
+
+                              onPressed: () {
+                                _countDownController.start();
+                              },
+                              child: Icon(Icons.arrow_right_rounded,size: 54,),
+                            ),
+                            SizedBox(width: 10,),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(shape: CircleBorder(), padding: EdgeInsets.all(8) ),
+
+                              onPressed: () {
+                                _countDownController.restart();
+                              },
+                              child: Icon(Icons.restart_alt_rounded,size: 30,),
+                            ),
+                          ],
+                        ),
                       ),
-
-                      Padding(padding: EdgeInsets.symmetric(vertical: 50),child: ElevatedButton(onPressed: (){
-                        _startTimer();
-                      }, child: Text('Start'),),),
-
                     ],
                   ),
                 ),
@@ -178,11 +207,11 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _incrementCounter,
-          tooltip: 'Increment',
-          child: const Icon(Icons.add),
-        ), // This trailing comma makes auto-formatting nicer for build methods.
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: _incrementCounter,
+        //   tooltip: 'Increment',
+        //   child: const Icon(Icons.add),
+        // ), // This trailing comma makes auto-formatting nicer for build methods.
       ),
     );
   }
