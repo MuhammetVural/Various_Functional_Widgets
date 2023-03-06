@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+import 'mp3_player.dart';
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -74,7 +76,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {},
                 icon: badges.Badge(
                     showBadge: true,
-                    onTap: () {},
+                    onTap: () {Navigator.push(
+                        context,
+                        new MaterialPageRoute(
+                            builder: (context) => Mp3Player()));},
                     badgeContent: Text('3'),
                     badgeAnimation: const badges.BadgeAnimation.rotation(
                       animationDuration: Duration(seconds: 1),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:various_functional_widgets/mp3_player.dart';
 
 import 'my_home_page.dart';
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: Mp3Player()
     );
   }
 }
